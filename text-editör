@@ -1,0 +1,85 @@
+package editörexample;
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import javax.swing.undo.*;
+import javax.swing.text.*;
+import javax.swing.event.*;
+
+public class editor extends JFrame  {
+	JButton undo;
+	JButton redo;
+	JButton italic;
+	JButton bold;
+	JButton select;
+	JTextArea area;
+	JPanel p;
+	
+
+
+	public editor() {
+		
+		p = new JPanel();
+		area = new JTextArea(5, 30);
+		UndoManager manager = new UndoManager();
+		undo = new JButton("Undo");
+		redo = new JButton("Redo");
+		italic=new JButton("italic");
+		bold=new JButton("bold");
+		select=new JButton("select");
+		
+		
+		
+		undo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					manager.undo();
+				} catch (Exception ex) {
+				}
+			}
+		});
+		redo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					manager.redo();
+				} catch (Exception ex) {
+				}
+			}
+		});
+		italic.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Font f = area.getFont();
+				// bold
+				area.setFont(f.deriveFont(f.getStyle() | Font.ITALIC));
+			}
+		});
+		bold.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Font f = area.getFont();
+				// bold
+				area.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+			}
+		});
+		
+		
+		
+		area.getDocument().addUndoableEditListener(new UndoableEditListener() {
+			public void undoableEditHappened(UndoableEditEvent e) {
+				manager.addEdit(e.getEdit());
+			}
+		});
+		p.add(area);
+		p.add(undo);
+		p.add(redo);
+		p.add(italic);
+		p.add(bold);
+		add(p);
+		setVisible(true);
+		pack();
+	}
+
+	public static void main(String[] args) {
+		editor op = new editor();
+	}
+}
